@@ -1,10 +1,10 @@
-import ServiceCard from "@/components/ServiceCard";
+import ServiceExplorer from "@/components/ServiceExplorer";
 import { services } from "@/data/services";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Hero 영역 */}
+      {/* Hero */}
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
           <p className="text-sm font-semibold text-gray-500">
@@ -24,7 +24,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 서비스 목록 */}
+      {/* 서비스 탐색 */}
       <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-950">
@@ -32,18 +32,11 @@ export default function Home() {
           </h2>
 
           <p className="mt-2 text-sm text-gray-500">
-            현재 {services.length}개의 서비스를 제공하고 있습니다.
+            원하는 서비스를 검색하거나 카테고리별로 찾아보세요.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-            />
-          ))}
-        </div>
+        <ServiceExplorer services={services} />
       </section>
     </main>
   );
