@@ -1,17 +1,43 @@
+import Link from "next/link";
+
 import type { Service } from "@/types/service";
 
 interface ServiceCardProps {
   service: Service;
+  isFavorite: boolean;
+  onToggleFavorite: (
+    serviceId: number,
+  ) => void;
 }
 
-export default function ServiceCard({ service }: ServiceCardProps) {
+export default function ServiceCard({
+  service,
+  isFavorite,
+  onToggleFavorite,
+}: ServiceCardProps) {
   return (
     <article className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-      {/* 서비스 카테고리 */}
-      <div>
+      {/* 카테고리 + 즐겨찾기 */}
+      <div className="flex items-start justify-between gap-4">
         <span className="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
           {service.category}
         </span>
+
+        <button
+          type="button"
+          onClick={() =>
+            onToggleFavorite(service.id)
+          }
+          aria-pressed={isFavorite}
+          aria-label={
+            isFavorite
+              ? `${service.name} 즐겨찾기 해제`
+              : `${service.name} 즐겨찾기 추가`
+          }
+          className="text-2xl transition hover:scale-110"
+        >
+          {isFavorite ? "★" : "☆"}
+        </button>
       </div>
 
       {/* 서비스 이름 */}
@@ -24,18 +50,24 @@ export default function ServiceCard({ service }: ServiceCardProps) {
         {service.description}
       </p>
 
-      {/* 외부 서비스 이동 */}
-      <a
-        href={service.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-6 inline-flex items-center text-sm font-semibold text-gray-900 hover:underline"
-      >
-        서비스 바로가기
-        <span aria-hidden="true" className="ml-1">
-          →
-        </span>
-      </a>
+      {/* 링크 */}
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <Link
+          href={`/services/${service.id}`}
+          className="text-sm font-semibold text-gray-900 hover:underline"
+        >
+          상세보기 →
+        </Link>
+
+        <a
+          href={service.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-gray-500 hover:text-gray-950 hover:underline"
+        >
+          공식 사이트
+        </a>
+      </div>
     </article>
   );
 }
