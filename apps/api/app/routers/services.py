@@ -1,7 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Path, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Path,
+    status,
+)
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.database import get_db
 from app.schemas.service import ServiceResponse
 from app.services import service_catalog
 
@@ -11,14 +19,26 @@ router = APIRouter(
 )
 
 
+DatabaseSession = Annotated[
+    AsyncSession,
+    Depends(get_db),
+]
+
+
 @router.get(
     "",
     response_model=list[ServiceResponse],
 )
-async def get_services() -> list[ServiceResponse]:
-    """전체 서비스 목록을 조회합니다."""
+async def get_services(
+    session: DatabaseSession,
+) -> list[ServiceResponse]:
+    """전체 서비스를 조회합니다."""
 
-    return service_catalog.list_services()
+    services = await service_catalog.list_services(
+        session,
+    )
+
+    return [ServiceResponse.model_validate(service) for service in services]
 
 
 @router.get(
@@ -30,10 +50,12 @@ async def get_service(
         int,
         Path(gt=0),
     ],
+    session: DatabaseSession,
 ) -> ServiceResponse:
-    """서비스 ID로 상세 정보를 조회합니다."""
+    """서비스 상세 정보를 조회합니다."""
 
-    service = service_catalog.get_service(
+    service = await service_catalog.get_service(
+        session,
         service_id,
     )
 
@@ -43,4 +65,6 @@ async def get_service(
             detail="Service not found",
         )
 
-    return service
+    return ServiceResponse.model_validate(
+        service,
+    )

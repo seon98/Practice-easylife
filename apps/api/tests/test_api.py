@@ -1,11 +1,18 @@
+from collections.abc import Iterator
+
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 
-client = TestClient(app)
+
+@pytest.fixture(scope="module")
+def client() -> Iterator[TestClient]:
+    with TestClient(app) as test_client:
+        yield test_client
 
 
-def test_health() -> None:
+def test_health(client: TestClient) -> None:
     response = client.get("/health")
 
     assert response.status_code == 200
@@ -14,7 +21,7 @@ def test_health() -> None:
     }
 
 
-def test_get_services() -> None:
+def test_get_services(client: TestClient) -> None:
     response = client.get(
         "/api/v1/services",
     )
@@ -29,7 +36,7 @@ def test_get_services() -> None:
     assert data[0]["name"] == "정부24"
 
 
-def test_get_service() -> None:
+def test_get_service(client: TestClient) -> None:
     response = client.get(
         "/api/v1/services/1",
     )
@@ -42,7 +49,7 @@ def test_get_service() -> None:
     assert data["name"] == "정부24"
 
 
-def test_service_not_found() -> None:
+def test_service_not_found(client: TestClient) -> None:
     response = client.get(
         "/api/v1/services/9999",
     )
