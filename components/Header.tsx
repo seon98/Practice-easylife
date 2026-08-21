@@ -14,6 +14,7 @@ const navigation = [
     name: "서비스",
     href: "/services",
   },
+  { name: "생활상황", href: "/life-events" },
   {
     name: "즐겨찾기",
     href: "/favorites",

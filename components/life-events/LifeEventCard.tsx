@@ -1,0 +1,3 @@
+import Link from "next/link";
+import type { LifeEventSummary } from "@/types/life-event";
+export default function LifeEventCard({event}:{event:LifeEventSummary}){return <Link href={`/life-events/${event.slug}`} className="group rounded-2xl border bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"><span className="text-4xl" aria-hidden>{event.icon}</span><p className="mt-5 text-xs font-semibold text-blue-700">{event.category} · {event.task_count}단계</p><h3 className="mt-2 text-xl font-bold group-hover:text-blue-700">{event.short_label}</h3><p className="mt-3 text-sm leading-6 text-gray-600">{event.description}</p><span className="mt-5 inline-block text-sm font-semibold">실행 플랜 보기 →</span></Link>}

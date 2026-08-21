@@ -1,4 +1,11 @@
 from app.models.favorite import FavoriteModel
+from app.models.life_event import (
+    LifeEventModel,
+    LifeEventTaskModel,
+    LifeEventTaskServiceModel,
+    UserLifePlanModel,
+    UserTaskProgressModel,
+)
 from app.models.monetization import (
     AffiliateLinkModel,
     AffiliatePartnerModel,
@@ -28,6 +35,9 @@ __all__ = [
     "FavoriteModel",
     "GuideModel",
     "GuideServiceModel",
+    "LifeEventModel",
+    "LifeEventTaskModel",
+    "LifeEventTaskServiceModel",
     "NotificationModel",
     "NotificationPreferenceModel",
     "PaymentEventModel",
@@ -36,6 +46,8 @@ __all__ = [
     "ServiceModel",
     "SponsorshipModel",
     "SubscriptionModel",
+    "UserLifePlanModel",
     "UserModel",
     "UserPreferenceModel",
+    "UserTaskProgressModel",
 ]
