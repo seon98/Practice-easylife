@@ -27,6 +27,17 @@ npm ci && npm run dev
 
 주요 환경변수는 `API_BASE_URL`, `NEXT_PUBLIC_API_BASE_URL`, `DATABASE_URL`, `SECRET_KEY`, `CORS_ORIGINS`, `APP_ENV`입니다. 실제 비밀값은 저장소에 저장하지 않습니다. 최초 관리자는 DB 관리 도구에서 해당 사용자의 `is_admin`을 명시적으로 변경합니다.
 
+### 광고 설정
+
+Google AdSense 승인을 받은 뒤 Vercel Production 환경변수에 아래 값을 설정합니다.
+
+- `NEXT_PUBLIC_ADS_ENABLED=true`
+- `NEXT_PUBLIC_AD_CLIENT_ID=ca-pub-...`
+- `NEXT_PUBLIC_AD_HOME_SLOT`, `NEXT_PUBLIC_AD_LIST_SLOT`, `NEXT_PUBLIC_AD_DETAIL_SLOT`
+- `NEXT_PUBLIC_AD_GUIDE_SLOT`, `NEXT_PUBLIC_AD_LIFE_EVENT_SLOT`
+
+설정 후 새 Production 배포를 실행하면 홈, 목록, 서비스 상세, 가이드, 생활상황 화면에 반응형 광고가 표시됩니다. 게시자 ID가 설정되면 `/ads.txt`도 자동 생성됩니다. 광고 계정이 없거나 기능이 비활성화된 환경에서는 광고 영역 자체를 렌더링하지 않습니다.
+
 ## 검사와 마이그레이션
 
 ```bash
@@ -48,7 +59,7 @@ docker compose ps
 docker compose down
 ```
 
-마이그레이션은 애플리케이션 시작 시 자동 실행하지 않습니다. PostgreSQL volume은 `down`으로 삭제되지 않습니다.
+API 컨테이너는 시작할 때 Alembic 마이그레이션을 자동 적용합니다. PostgreSQL volume은 `down`으로 삭제되지 않습니다.
 
 ## Production
 

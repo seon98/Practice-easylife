@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getService } from "@/lib/api/services";
 import TrackedServiceLink from "@/components/TrackedServiceLink";
+import AdSlot from "@/components/ads/AdSlot";
 
 interface ServiceDetailPageProps {
   params: Promise<{
@@ -115,6 +116,7 @@ export default async function ServiceDetailPage({
           </TrackedServiceLink>
         </div>
       </article>
+      <AdSlot slot={process.env.NEXT_PUBLIC_AD_DETAIL_SLOT} className="mt-10" />
     </main>
   );
 }

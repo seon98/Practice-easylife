@@ -2,6 +2,7 @@ import ServiceExplorer from "@/components/ServiceExplorer";
 import { getServices } from "@/lib/api/services";
 import { getLifeEvents } from "@/lib/api/life-events";
 import LifeEventCard from "@/components/life-events/LifeEventCard";
+import AdSlot from "@/components/ads/AdSlot";
 import Link from "next/link";
 
 export default async function Home() {
@@ -31,6 +32,10 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8"><div className="flex items-end justify-between gap-4"><div><p className="text-sm font-semibold text-blue-700">생활 내비게이션</p><h2 className="mt-2 text-2xl font-bold">무슨 일이 생겼나요?</h2><p className="mt-2 text-sm text-gray-500">상황을 고르면 해야 할 일을 실행 순서로 안내합니다.</p></div><Link href="/life-events" className="text-sm font-semibold">전체 보기 →</Link></div><div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{lifeEvents.slice(0,5).map(event=><LifeEventCard key={event.id} event={event}/>)}</div></section>
+
+      <div className="mx-auto max-w-7xl px-6 pb-12 lg:px-8">
+        <AdSlot slot={process.env.NEXT_PUBLIC_AD_HOME_SLOT} />
+      </div>
 
       {/* 서비스 탐색 */}
       <section className="border-t bg-white"><div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">

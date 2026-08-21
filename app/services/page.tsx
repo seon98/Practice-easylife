@@ -1,4 +1,5 @@
 import ServiceExplorer from "@/components/ServiceExplorer";
+import AdSlot from "@/components/ads/AdSlot";
 import { getServices } from "@/lib/api/services";
 
 export default async function ServicesPage() {
@@ -19,6 +20,8 @@ export default async function ServicesPage() {
           원하는 서비스를 검색하거나 카테고리별로 찾아보세요.
         </p>
       </div>
+
+      <AdSlot slot={process.env.NEXT_PUBLIC_AD_LIST_SLOT} className="mb-10" />
 
       <ServiceExplorer services={services} />
     </main>
