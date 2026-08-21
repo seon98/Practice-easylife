@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Vercel performs its own output tracing. Standalone output is retained for
+  // the Docker image, but enabling it on Vercel breaks Next.js 16 post-build
+  // processing because Vercel expects the regular server trace manifest.
+  ...(process.env.VERCEL ? {} : { output: "standalone" as const }),
   poweredByHeader: false,
   async headers() {
     return [{ source: "/(.*)", headers: [
