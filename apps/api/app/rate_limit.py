@@ -15,5 +15,7 @@ async def limit_auth_attempts(request: Request) -> None:
     while bucket and bucket[0] <= now - WINDOW_SECONDS:
         bucket.popleft()
     if len(bucket) >= MAX_ATTEMPTS:
-        raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many authentication attempts")
+        raise HTTPException(
+            status.HTTP_429_TOO_MANY_REQUESTS, "Too many authentication attempts"
+        )
     bucket.append(now)

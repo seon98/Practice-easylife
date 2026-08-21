@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { Service } from "@/types/service";
+import TrackedServiceLink from "@/components/TrackedServiceLink";
 
 interface ServiceCardProps {
   service: Service;
@@ -59,14 +60,13 @@ export default function ServiceCard({
           상세보기 →
         </Link>
 
-        <a
+        <TrackedServiceLink
+          id={service.id}
           href={service.url}
-          target="_blank"
-          rel="noopener noreferrer"
           className="text-sm text-gray-500 hover:text-gray-950 hover:underline"
         >
           공식 사이트
-        </a>
+        </TrackedServiceLink>
       </div>
     </article>
   );

@@ -54,20 +54,28 @@ async def get_optional_user(
         )
         user_id = int(payload["sub"])
     except (InvalidTokenError, KeyError, TypeError, ValueError) as error:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid authentication credentials") from error
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED, "Invalid authentication credentials"
+        ) from error
     user = await session.get(UserModel, user_id)
     if user is None or not user.is_active:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid authentication credentials")
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED, "Invalid authentication credentials"
+        )
     return user
 
 
-async def get_current_user(user: Annotated[UserModel | None, Depends(get_optional_user)]) -> UserModel:
+async def get_current_user(
+    user: Annotated[UserModel | None, Depends(get_optional_user)],
+) -> UserModel:
     if user is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Authentication required")
     return user
 
 
-async def require_admin(user: Annotated[UserModel, Depends(get_current_user)]) -> UserModel:
+async def require_admin(
+    user: Annotated[UserModel, Depends(get_current_user)],
+) -> UserModel:
     if not user.is_admin:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Administrator access required")
     return user

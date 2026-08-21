@@ -16,7 +16,9 @@ router = APIRouter(prefix="/favorites", tags=["favorites"])
 
 def require_identity(client_id: UUID | None, user: UserModel | None) -> None:
     if client_id is None and user is None:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "X-Client-ID header is required")
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, "X-Client-ID header is required"
+        )
 
 
 @router.get("", response_model=list[FavoriteResponse])
@@ -26,7 +28,9 @@ async def get_favorites(
     client_id: Annotated[UUID | None, Header(alias="X-Client-ID")] = None,
 ) -> list[FavoriteResponse]:
     require_identity(client_id, user)
-    items = await favorite_service.list_favorites(session, client_id, user.id if user else None)
+    items = await favorite_service.list_favorites(
+        session, client_id, user.id if user else None
+    )
     return [FavoriteResponse.model_validate(item) for item in items]
 
 
@@ -40,7 +44,9 @@ async def add_favorite(
     require_identity(client_id, user)
     if await session.get(ServiceModel, service_id) is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Service not found")
-    item = await favorite_service.add_favorite(session, service_id, client_id, user.id if user else None)
+    item = await favorite_service.add_favorite(
+        session, service_id, client_id, user.id if user else None
+    )
     return FavoriteResponse.model_validate(item)
 
 
@@ -52,5 +58,7 @@ async def delete_favorite(
     client_id: Annotated[UUID | None, Header(alias="X-Client-ID")] = None,
 ) -> Response:
     require_identity(client_id, user)
-    await favorite_service.delete_favorite(session, service_id, client_id, user.id if user else None)
+    await favorite_service.delete_favorite(
+        session, service_id, client_id, user.id if user else None
+    )
     return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -15,15 +15,26 @@ from app.services import auth_service
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(limit_auth_attempts)])
-async def signup(payload: SignupRequest, session: Annotated[AsyncSession, Depends(get_db)]) -> TokenResponse:
+@router.post(
+    "/signup",
+    response_model=TokenResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(limit_auth_attempts)],
+)
+async def signup(
+    payload: SignupRequest, session: Annotated[AsyncSession, Depends(get_db)]
+) -> TokenResponse:
     if await auth_service.get_user_by_email(session, payload.email):
         raise HTTPException(status.HTTP_409_CONFLICT, "Email is already registered")
     user = await auth_service.create_user(session, payload.email, payload.password)
-    return TokenResponse(access_token=create_access_token(user), user=UserResponse.model_validate(user))
+    return TokenResponse(
+        access_token=create_access_token(user), user=UserResponse.model_validate(user)
+    )
 
 
-@router.post("/login", response_model=TokenResponse, dependencies=[Depends(limit_auth_attempts)])
+@router.post(
+    "/login", response_model=TokenResponse, dependencies=[Depends(limit_auth_attempts)]
+)
 async def login(
     payload: LoginRequest,
     session: Annotated[AsyncSession, Depends(get_db)],
@@ -34,7 +45,9 @@ async def login(
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
     if client_id:
         await auth_service.merge_anonymous_favorites(session, client_id, user)
-    return TokenResponse(access_token=create_access_token(user), user=UserResponse.model_validate(user))
+    return TokenResponse(
+        access_token=create_access_token(user), user=UserResponse.model_validate(user)
+    )
 
 
 @router.get("/me", response_model=UserResponse)

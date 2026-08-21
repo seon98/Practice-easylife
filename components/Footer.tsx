@@ -43,6 +43,9 @@ export default function Footer() {
             >
               즐겨찾기
             </Link>
+            <Link href="/guides" className="hover:text-gray-950">가이드</Link>
+            <Link href="/legal/privacy" className="hover:text-gray-950">개인정보</Link>
+            <Link href="/legal/disclosure" className="hover:text-gray-950">광고·제휴</Link>
           </nav>
         </div>
 

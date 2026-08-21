@@ -81,7 +81,9 @@ async def seed_services() -> None:
     async with AsyncSessionFactory() as session:
         await session.execute(statement)
         await session.execute(
-            text("SELECT setval(pg_get_serial_sequence('services', 'id'), (SELECT MAX(id) FROM services))")
+            text(
+                "SELECT setval(pg_get_serial_sequence('services', 'id'), (SELECT MAX(id) FROM services))"
+            )
         )
         await session.commit()
 

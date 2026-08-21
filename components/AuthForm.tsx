@@ -7,6 +7,7 @@ import { FormEvent, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { login, signup } from "@/lib/api/auth";
 import { CLIENT_ID_KEY } from "@/lib/api/favorites";
+import { trackEvent } from "@/lib/analytics";
 
 export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
         ? await login(email, password, localStorage.getItem(CLIENT_ID_KEY))
         : await signup(email, password);
       acceptAuth(result);
+      trackEvent(mode === "login" ? "login" : "signup");
       router.push("/services");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "요청을 처리하지 못했습니다.");

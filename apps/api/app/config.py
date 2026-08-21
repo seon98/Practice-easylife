@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     jwt_audience: str = "easylife-web"
     access_token_expire_minutes: int = Field(default=30, gt=0, le=1440)
     log_level: str = "INFO"
+    payment_secret_key: str = ""
+    payment_webhook_secret: str = ""
+    email_provider_api_key: str = ""
+    public_api_free_requests_per_minute: int = Field(default=30, gt=0, le=1000)
 
     @field_validator("database_url")
     @classmethod

@@ -8,7 +8,7 @@ from sqlalchemy import text
 from app.config import get_settings
 from app.database import AsyncSessionFactory, engine
 from app.middleware import request_context
-from app.routers import admin, auth, favorites, services
+from app.routers import admin, auth, favorites, monetization, services
 
 settings = get_settings()
 
@@ -63,6 +63,9 @@ app.include_router(
 app.include_router(favorites.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
+app.include_router(monetization.router)
+app.include_router(monetization.public_router)
+app.include_router(monetization.redirect_router)
 
 
 @app.get(

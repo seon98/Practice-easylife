@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import Breadcrumb from "@/components/Breadcrumb";
 import { getService } from "@/lib/api/services";
+import TrackedServiceLink from "@/components/TrackedServiceLink";
 
 interface ServiceDetailPageProps {
   params: Promise<{
@@ -99,10 +100,9 @@ export default async function ServiceDetailPage({
             이용할 수 있습니다.
           </p>
 
-          <a
+          <TrackedServiceLink
+            id={service.id}
             href={service.url}
-            target="_blank"
-            rel="noopener noreferrer"
             className="mt-6 inline-flex rounded-xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
           >
             {service.name} 공식 사이트
@@ -112,7 +112,7 @@ export default async function ServiceDetailPage({
             >
               →
             </span>
-          </a>
+          </TrackedServiceLink>
         </div>
       </article>
     </main>

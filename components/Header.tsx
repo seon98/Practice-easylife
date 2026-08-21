@@ -18,6 +18,8 @@ const navigation = [
     name: "즐겨찾기",
     href: "/favorites",
   },
+  { name: "가이드", href: "/guides" },
+  { name: "Plus", href: "/plus" },
 ];
 
 export default function Header() {

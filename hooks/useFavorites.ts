@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { addFavorite, getFavorites, removeFavorite } from "@/lib/api/favorites";
+import { trackEvent } from "@/lib/analytics";
 
 const EVENT = "easylife:favorites-changed";
 
@@ -34,6 +35,7 @@ export function useFavorites() {
     setFavoriteIds((current) => wasFavorite ? current.filter((id) => id !== serviceId) : [...current, serviceId]);
     try {
       await (wasFavorite ? removeFavorite(serviceId) : addFavorite(serviceId));
+      if (!wasFavorite) trackEvent("favorite_add", { service_id: serviceId });
       window.dispatchEvent(new Event(EVENT));
     } catch {
       setError("즐겨찾기를 변경하지 못했습니다.");
