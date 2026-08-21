@@ -7,3 +7,4 @@ export const getAdminGuides = () => request<Guide[]>("/api/v1/admin/guides");
 export const createAdminGuide = (payload: object) => request<Guide>("/api/v1/admin/guides", { method: "POST", body: JSON.stringify(payload) });
 export const getRevenueSummary = () => request<Record<string, unknown>>("/api/v1/admin/revenue/summary");
 export const getAnalyticsSummary = () => request<Record<string, unknown>>("/api/v1/admin/analytics/summary");
+export const getAdminFeedback = () => request<Array<{ id: number; category: string; email: string | null; page_url: string | null; message: string; status: string; created_at: string }>>("/api/v1/admin/feedback");

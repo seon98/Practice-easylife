@@ -17,6 +17,7 @@ from app.models.monetization import (
     AnalyticsEventModel,
     ApiClientModel,
     ApiUsageModel,
+    FeedbackRequestModel,
     GuideModel,
     GuideServiceModel,
     NotificationPreferenceModel,
@@ -30,6 +31,7 @@ from app.models.monetization import (
 from app.models.service import ServiceModel
 from app.models.user import UserModel
 from app.payments.provider import get_payment_provider
+from app.rate_limit import limit_auth_attempts
 from app.schemas.monetization import (
     AffiliateLinkCreate,
     AffiliatePartnerCreate,
@@ -37,6 +39,8 @@ from app.schemas.monetization import (
     ApiClientCreate,
     ApiClientCreated,
     CheckoutResponse,
+    FeedbackRequestCreate,
+    FeedbackRequestResponse,
     GuideCreate,
     GuideResponse,
     GuideUpdate,
@@ -93,6 +97,39 @@ async def get_guide(slug: str, session: Db) -> GuideResponse:
     if row is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Guide not found")
     return await guide_response(session, row)
+
+
+@router.post(
+    "/feedback",
+    response_model=dict[str, str],
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def create_feedback(
+    payload: FeedbackRequestCreate,
+    session: Db,
+    _: None = Depends(limit_auth_attempts),
+) -> dict[str, str]:
+    session.add(
+        FeedbackRequestModel(
+            category=payload.category,
+            email=payload.email,
+            page_url=payload.page_url,
+            message=payload.message,
+        )
+    )
+    await session.commit()
+    return {"status": "accepted"}
+
+
+@router.get("/admin/feedback", response_model=list[FeedbackRequestResponse])
+async def admin_feedback(session: Db, _: Admin) -> list[FeedbackRequestModel]:
+    return list(
+        await session.scalars(
+            select(FeedbackRequestModel)
+            .order_by(FeedbackRequestModel.created_at.desc())
+            .limit(200)
+        )
+    )
 
 
 @router.get("/admin/guides", response_model=list[GuideResponse])

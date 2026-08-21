@@ -112,3 +112,27 @@ def test_payment_webhook_requires_signature(client: TestClient) -> None:
         },
     )
     assert response.status_code == 401
+
+
+def test_feedback_can_be_submitted_and_only_admin_can_read(
+    client: TestClient, admin_token: str
+) -> None:
+    submitted = client.post(
+        "/api/v1/feedback",
+        json={
+            "category": "correction",
+            "email": "reader@example.com",
+            "page_url": "https://practice-easylife.vercel.app/guides/example",
+            "message": "공식 기관 링크가 변경된 것 같습니다.",
+            "privacy_consent": True,
+        },
+    )
+    assert submitted.status_code == 202
+    assert client.get("/api/v1/admin/feedback").status_code == 401
+
+    response = client.get(
+        "/api/v1/admin/feedback",
+        headers={"Authorization": f"Bearer {admin_token}"},
+    )
+    assert response.status_code == 200
+    assert response.json()[0]["category"] == "correction"

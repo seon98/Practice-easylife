@@ -7,6 +7,7 @@ export interface Guide {
   category: string;
   status: string;
   published_at: string | null;
+  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
   service_ids: number[];

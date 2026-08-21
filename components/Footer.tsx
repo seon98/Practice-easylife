@@ -20,7 +20,7 @@ export default function Footer() {
           </div>
 
           <nav
-            className="flex gap-5 text-sm text-gray-500"
+            className="flex flex-wrap gap-5 text-sm text-gray-500"
             aria-label="하단 메뉴"
           >
             <Link
@@ -44,6 +44,8 @@ export default function Footer() {
               즐겨찾기
             </Link>
             <Link href="/guides" className="hover:text-gray-950">가이드</Link>
+            <Link href="/about" className="hover:text-gray-950">소개</Link>
+            <Link href="/contact" className="hover:text-gray-950">문의·오류 신고</Link>
             <Link href="/legal/privacy" className="hover:text-gray-950">개인정보</Link>
             <Link href="/legal/disclosure" className="hover:text-gray-950">광고·제휴</Link>
           </nav>

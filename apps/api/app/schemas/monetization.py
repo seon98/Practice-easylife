@@ -47,9 +47,43 @@ class GuideResponse(BaseModel):
     category: str
     status: str
     published_at: datetime | None
+    reviewed_at: datetime | None
     created_at: datetime
     updated_at: datetime
     service_ids: list[int] = Field(default_factory=list)
+
+
+class FeedbackRequestCreate(BaseModel):
+    category: Literal["general", "correction", "broken_link", "privacy"]
+    email: str | None = Field(default=None, max_length=320)
+    page_url: str | None = Field(default=None, max_length=1000)
+    message: str = Field(min_length=10, max_length=5000)
+    privacy_consent: bool
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value: str | None) -> str | None:
+        if value and ("@" not in value or value.startswith("@") or value.endswith("@")):
+            raise ValueError("invalid email")
+        return value
+
+    @field_validator("privacy_consent")
+    @classmethod
+    def require_consent(cls, value: bool) -> bool:
+        if not value:
+            raise ValueError("privacy consent is required")
+        return value
+
+
+class FeedbackRequestResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    category: str
+    email: str | None
+    page_url: str | None
+    message: str
+    status: str
+    created_at: datetime
 
 
 class AnalyticsEventCreate(BaseModel):
