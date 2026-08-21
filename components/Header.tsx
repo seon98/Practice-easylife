@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/components/AuthProvider";
 
 const navigation = [
   {
@@ -20,6 +21,7 @@ const navigation = [
 ];
 
 export default function Header() {
+  const { user, logout } = useAuth();
   const pathname = usePathname();
 
   const [isMenuOpen, setIsMenuOpen] =
@@ -68,6 +70,12 @@ export default function Header() {
               </Link>
             );
           })}
+          {user?.is_admin && <Link href="/admin" className="rounded-lg px-4 py-2 text-sm font-medium">관리</Link>}
+          {user ? (
+            <button type="button" onClick={logout} className="rounded-lg px-4 py-2 text-sm font-medium">로그아웃</button>
+          ) : (
+            <Link href="/login" className="rounded-lg px-4 py-2 text-sm font-medium">로그인</Link>
+          )}
         </nav>
 
         {/* 모바일 메뉴 버튼 */}

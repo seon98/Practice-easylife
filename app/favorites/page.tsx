@@ -1,7 +1,9 @@
 import FavoriteServices from "@/components/FavoriteServices";
-import { services } from "@/data/services";
+import { getServices } from "@/lib/api/services";
 
-export default function FavoritesPage() {
+export default async function FavoritesPage() {
+  const services = await getServices();
+
   return (
     <main className="mx-auto min-h-screen max-w-7xl px-6 py-12 lg:px-8">
       <div className="mb-10">

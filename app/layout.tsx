@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { AuthProvider } from "@/components/AuthProvider";
 
 import "./globals.css";
 
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="flex min-h-screen flex-col bg-gray-50 text-gray-950 antialiased">
+        <AuthProvider>
         <Header />
 
         <div className="flex-1">
@@ -29,6 +31,7 @@ export default function RootLayout({
         </div>
 
         <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

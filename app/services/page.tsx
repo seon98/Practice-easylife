@@ -1,7 +1,9 @@
 import ServiceExplorer from "@/components/ServiceExplorer";
-import { services } from "@/data/services";
+import { getServices } from "@/lib/api/services";
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
+
   return (
     <main className="mx-auto min-h-screen max-w-7xl px-6 py-12 lg:px-8">
       <div className="mb-10">

@@ -3,10 +3,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.config import get_settings
-from app.database import engine
-from app.routers import services
+from app.database import AsyncSessionFactory, engine
+from app.middleware import request_context
+from app.routers import admin, auth, favorites, services
 
 settings = get_settings()
 
@@ -43,19 +45,24 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=[
         "Accept",
         "Authorization",
         "Content-Type",
+        "X-Client-ID",
     ],
 )
+app.middleware("http")(request_context)
 
 
 app.include_router(
     services.router,
     prefix="/api/v1",
 )
+app.include_router(favorites.router, prefix="/api/v1")
+app.include_router(auth.router, prefix="/api/v1")
+app.include_router(admin.router, prefix="/api/v1")
 
 
 @app.get(
@@ -72,3 +79,10 @@ async def health() -> dict[str, str]:
     return {
         "status": "ok",
     }
+
+
+@app.get("/health/ready", include_in_schema=False)
+async def readiness() -> dict[str, str]:
+    async with AsyncSessionFactory() as session:
+        await session.execute(text("SELECT 1"))
+    return {"status": "ready", "database": "ok"}

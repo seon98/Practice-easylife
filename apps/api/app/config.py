@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +21,27 @@ class Settings(BaseSettings):
     )
 
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    secret_key: str = "development-only-change-me-at-least-32-characters"
+    jwt_algorithm: str = "HS256"
+    jwt_issuer: str = "easylife-api"
+    jwt_audience: str = "easylife-web"
+    access_token_expire_minutes: int = Field(default=30, gt=0, le=1440)
+    log_level: str = "INFO"
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        if value.startswith("postgres://"):
+            return value.replace("postgres://", "postgresql+asyncpg://", 1)
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return value
+
+    @model_validator(mode="after")
+    def validate_production_secrets(self) -> "Settings":
+        if self.app_env == "production" and self.secret_key.startswith("development-"):
+            raise ValueError("A secure SECRET_KEY is required in production")
+        return self
 
     @property
     def cors_origin_list(self) -> list[str]:

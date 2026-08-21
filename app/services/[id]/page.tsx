@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import Breadcrumb from "@/components/Breadcrumb";
-import { services } from "@/data/services";
+import { getService } from "@/lib/api/services";
 
 interface ServiceDetailPageProps {
   params: Promise<{
@@ -10,20 +10,20 @@ interface ServiceDetailPageProps {
   }>;
 }
 
-export function generateStaticParams() {
-  return services.map((service) => ({
-    id: String(service.id),
-  }));
-}
-
 export async function generateMetadata({
   params,
 }: ServiceDetailPageProps): Promise<Metadata> {
   const { id } = await params;
 
-  const service = services.find(
-    (item) => item.id === Number(id),
-  );
+  const serviceId = Number(id);
+
+  if (!Number.isSafeInteger(serviceId) || serviceId <= 0) {
+    return {
+      title: "서비스를 찾을 수 없습니다",
+    };
+  }
+
+  const service = await getService(serviceId);
 
   if (!service) {
     return {
@@ -44,9 +44,11 @@ export default async function ServiceDetailPage({
 
   const serviceId = Number(id);
 
-  const service = services.find(
-    (item) => item.id === serviceId,
-  );
+  if (!Number.isSafeInteger(serviceId) || serviceId <= 0) {
+    notFound();
+  }
+
+  const service = await getService(serviceId);
 
   if (!service) {
     notFound();

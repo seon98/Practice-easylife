@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
+from sqlalchemy.pool import NullPool
 
 from app.config import get_settings
 
@@ -17,6 +18,7 @@ engine = create_async_engine(
     pool_pre_ping=True,
     # SQL 로그는 필요할 때만 True로 변경
     echo=False,
+    poolclass=NullPool if settings.app_env == "test" else None,
 )
 
 

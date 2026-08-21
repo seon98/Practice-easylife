@@ -1,7 +1,9 @@
 import ServiceExplorer from "@/components/ServiceExplorer";
-import { services } from "@/data/services";
+import { getServices } from "@/lib/api/services";
 
-export default function Home() {
+export default async function Home() {
+  const services = await getServices();
+
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero */}

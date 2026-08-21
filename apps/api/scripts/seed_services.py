@@ -1,5 +1,6 @@
 import asyncio
 
+from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import insert
 
 from app.database import AsyncSessionFactory
@@ -79,6 +80,9 @@ async def seed_services() -> None:
 
     async with AsyncSessionFactory() as session:
         await session.execute(statement)
+        await session.execute(
+            text("SELECT setval(pg_get_serial_sequence('services', 'id'), (SELECT MAX(id) FROM services))")
+        )
         await session.commit()
 
     print(f"Seeded {len(SERVICES)} services.")
