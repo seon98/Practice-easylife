@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     @classmethod
     def normalize_database_url(cls, value: str) -> str:
         value = value.replace("sslmode=require", "ssl=require")
+        value = value.replace("&channel_binding=require", "")
         if value.startswith("postgres://"):
             return value.replace("postgres://", "postgresql+asyncpg://", 1)
         if value.startswith("postgresql://"):
